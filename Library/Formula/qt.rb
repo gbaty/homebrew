@@ -34,6 +34,7 @@ class Qt < Formula
 
   depends_on "d-bus" => :optional
   depends_on "mysql" => :optional
+  depends_on 'sqlite' if MacOS.version == :leopard
 
   odie 'qt: --with-qtdbus has been renamed to --with-d-bus' if build.include? 'with-qtdbus'
   odie 'qt: --with-demos-examples is no longer supported' if build.include? 'with-demos-examples'
@@ -64,6 +65,7 @@ class Qt < Formula
         end
     end
 
+    args << "-system-sqlite" if MacOS.leopard?
     args << "-plugin-sql-mysql" if build.with? 'mysql'
 
     if build.with? 'd-bus'

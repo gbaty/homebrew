@@ -7,6 +7,15 @@ class Ffmpeg < Formula
 
   head 'git://git.videolan.org/ffmpeg.git'
 
+  #fails_with_llvm 'Undefined symbols when linking `libavfilter`'
+
+  #def options
+  #  [
+  #    ["--with-tools", "Install additional FFmpeg tools."],
+  #    ["--with-ffplay", "Build ffplay."]
+  #  ]
+  #end
+
   # This is actually the new stable, not a devel release,
   # but not everything builds with it yet - notably gpac
   devel do
@@ -17,6 +26,7 @@ class Ffmpeg < Formula
     depends_on 'libquvi' => :optional
   end
 
+  option "without-faac", "Disable AAC encoder"
   option "without-x264", "Disable H.264 encoder"
   option "without-lame", "Disable MP3 encoder"
   option "without-xvid", "Disable Xvid MPEG-4 video encoder"
@@ -64,6 +74,9 @@ class Ffmpeg < Formula
   def patches; DATA; end unless build.head?
 
   def install
+    ENV.x11
+    raise "ENV.cc == #{ENV.cc}" unless ENV.cc == 'clang'
+
     # Remove when fix for freetype 2.5.1+ is incorporated upstream
     inreplace 'configure', 'ft2build.h freetype/freetype.h', 'ft2build.h freetype.h'
 
